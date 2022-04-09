@@ -1,0 +1,26 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: go_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=covid_dataset
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - go
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/covid_dataset --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+networks:
+  go:
+    driver: bridge
+volumes:
+  mongodb:
